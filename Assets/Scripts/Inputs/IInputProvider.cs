@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Inputs
+namespace Roguelike.Inputs
 {
     internal interface IInputProvider
     {

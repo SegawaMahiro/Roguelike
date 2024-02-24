@@ -1,14 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UnityEngine;
 
-namespace Assets.Scripts.Players
+namespace Roguelike.Players
 {
     [System.Serializable]
     public struct PlayerParameter
     {
+        [Header("Combat :")]
+        public int MaxHealth;
+        public int CurrentHealth;
+
+        [Header("Locomotion :")]
+        public bool IsMovable;
+        public bool IsSprintable;
         public float WalkSpeed;
+        public float SprintSpeed;
+
+        [Header("State :")]
+        public float InvincibleTime;
     }
 }

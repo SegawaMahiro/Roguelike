@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Dungeons
+namespace Roguelike.Dungeons
 {
-    [CreateAssetMenu(fileName = "new Lroom", menuName = "ScriptableObjects/DungeonTiles/L")]
     internal class DungeonRoomL : RoomData
     {
         private bool[,] _shape = new bool[2, 2] {

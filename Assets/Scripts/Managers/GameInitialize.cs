@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Managers
+namespace Roguelike.Managers
 {
     internal class GameInitialize
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Elements
+namespace Roguelike.Elements
 {
     public abstract class BaseElement
     {

@@ -1,24 +1,39 @@
-﻿using Assets.Scripts.Elements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Roguelike.Damages;
+using Roguelike.Damages.Hitbox;
 using UnityEngine;
 
-namespace Assets.Scripts.Weapons.Sword
+namespace Roguelike.Weapons.Sword
 {
     [CreateAssetMenu(menuName = "ScriptableObjects/Weapons/Create Sword", fileName = "SwordData")]
-    public class BaseSword : Weapon
+    public class BaseSword : MeleeWeapon
     {
-        [SerializeReference,SubclassSelector] BaseElement _weaponElement;
-        [SerializeField] uint _damage;
-        protected override BaseElement WeaponElement => _weaponElement;
-        protected override uint Strength => _damage;
+        [SerializeField] GameObject _hitVFX;
+        [SerializeReference,SubclassSelector] IHitboxShape _hitShape;
 
-        public override void Attack(uint combo) {
-            Debug.Log("Damage : " + _damage);
-            Debug.Log("elementDamage : " +_weaponElement.ElementDamage);
+        protected override void OnAttack(int comboCount) {
+
+            var t = GetAttackTime(comboCount);
+
+            HitboxUtility.CreateContinuousOverlap(_weaponCenter, _hitShape, t.delay, t.dura, hit => {
+
+                if (hit.Collider.gameObject == _weaponOwner) return;
+
+                if (hit.Collider.TryGetComponent<IDamageApplicable>(out var target)) {
+
+                    var center = _weaponCenter.position;
+                    var enter = hit.EnterPosition;
+                    var hitDirection = hit.EnterDirection;
+
+                    var rotation = Quaternion.LookRotation(hitDirection);
+                    var vfx = ObjectPoolManager.Instance.Get(_hitVFX, enter, rotation);
+                    ObjectPoolManager.Instance.Release(vfx, 1);
+
+                    target.ApplyDamage(new Damage() { Value = _strength });
+
+                    _source.Cancel();
+                }
+
+            }, _source.Token);
         }
     }
 }

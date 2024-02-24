@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LockonOverride
+  m_Controller: {fileID: 9100000, guid: eb7a33e92251e8b4f9ec54fca7e58ea3, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 7effe9fb098eaa14ab7e8fab986e5671, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 94c75858633b4e04f9e28db3b52b2bba, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: d32b9796c7ff862428fa3a8670deda3c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a3c7daf5dbba19245938db35245052fa, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: ce88f44e47bf8744ba2b808abc780c98, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a3c7daf5dbba19245938db35245052fa, type: 3}

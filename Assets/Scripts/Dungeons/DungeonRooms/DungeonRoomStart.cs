@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.Dungeons
+namespace Roguelike.Dungeons
 {
-    [CreateAssetMenu(fileName = "new StartRoom", menuName = "ScriptableObjects/DungeonTiles/StartRoom")]
-    internal sealed class DungeonRoomStart : DungeonRoom1x1
+    [System.Serializable]
+    public sealed class DungeonRoomStart : DungeonRoom1x1
     {
+        public override bool IsSingleGate => true;
     }
 }

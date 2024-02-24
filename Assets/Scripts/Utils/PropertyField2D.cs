@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Utils
+namespace Roguelike.Utils
 {
     [Serializable]
     public class PropertyField2D<T>

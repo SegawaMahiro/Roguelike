@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Elements
+namespace Roguelike.Elements
 {
+    [Serializable]
     public class FireElement : BaseElement
     {
         [SerializeField] int _elementDamage;

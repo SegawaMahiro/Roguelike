@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Assets.Scripts.Players.Inputs
+namespace Roguelike.Players.Inputs
 {
     //public class DefaultInput : IInputProvider
     //{
