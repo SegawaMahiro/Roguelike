@@ -25,8 +25,10 @@ namespace Roguelike.Players
         private Vector3 _combinedRaycast;
 
         // knockback
+        private float _knockbackDelay = 0;
         private float _knockbackDuration = 1.0f;
         private float _knockbackTimer;
+        private float _initialKnockbackTime;
         private float _knockbackPower = 3.0f;
         private Vector3 _knockbackDirection;
         private bool _isKnockback = false;
@@ -42,6 +44,7 @@ namespace Roguelike.Players
         /// </summary>
         internal void OnMoveInput(Vector3 input, float maxSpeed) {
             if (_isKnockback) return;
+            // プレイヤーの角度をカメラから見た進行方向へ向ける
             var cameraForward = Camera.main.transform.forward;
             cameraForward.y = 0f;
 
@@ -52,13 +55,15 @@ namespace Roguelike.Players
             _inputVelocity *= maxSpeed;
         }
         internal void CharacterMove() {
+            // ロックオン中かつ移動可能な場合対象のほうを向き続ける
             if (_isLockOn && _playerCore.Parameter.IsMovable) {
                 _transform.rotation = LockonRotation();
             }
+            // 地面が存在しない場合重力を加算
             if (FloorRaycasts(0, 0, 0.6f) == Vector3.zero) {
                 _gravity += Vector3.up * Physics.gravity.y * Time.deltaTime;
             }
-
+            // knockback中の場合以下の移動処理は行わない
             if (_isKnockback) {
                 OnDuringKnockback();
                 return;
@@ -77,15 +82,14 @@ namespace Roguelike.Players
         }
 
 
-        /// <summary>
-        /// カメラの方向を正面とし、入力方向へ移動させる
-        /// </summary>
         private void SetPlayerRotation(Vector3 input, Vector3 cameraForward) {
             Quaternion targetRotation;
+            // lockon中の場合対象を向く
             if (_isLockOn) {
                 targetRotation = LockonRotation();
             }
             else {
+                // それ以外の場合入力方向を向く
                 var inputDirection = Quaternion.LookRotation(cameraForward) * input;
                 if (inputDirection != Vector3.zero) {
                     targetRotation = Quaternion.LookRotation(inputDirection);
@@ -111,13 +115,33 @@ namespace Roguelike.Players
 
 
         private void OnDuringKnockback() {
+            if (_knockbackDelay > 0)
+            {
+                _knockbackDelay -= Time.deltaTime;
+                return;
+            }
             _knockbackTimer -= Time.deltaTime;
-            Vector3 moveBackPosition = _knockbackDirection * _knockbackPower + _gravity;
-            _rb.velocity = moveBackPosition;
+          //  var normalizedKBTime = _knockbackTimer / _initialKnockbackTime;
+            Vector3 moveBackPosition = _knockbackDirection * _knockbackPower;
+         //   moveBackPosition *= normalizedKBTime;
+            _rb.velocity = moveBackPosition + _gravity;
             GroundCheck();
 
             if (_knockbackTimer <= 0) {
                 _isKnockback = false;
+            }
+        }
+
+
+        public void ApplyKnockback(Vector3 direction, float power, float duration,float delay = 0) {
+            if (!_isKnockback) {
+                _knockbackDelay = delay;
+                _knockbackDirection = direction;
+                _knockbackPower = power;
+                _knockbackDuration = duration;
+                _knockbackTimer = _knockbackDuration;
+                _initialKnockbackTime = _knockbackTimer;
+                _isKnockback = true;
             }
         }
 
@@ -129,17 +153,6 @@ namespace Roguelike.Players
                 _gravity.y = 0;
             }
         }
-
-        public void ApplyKnockback(Vector3 direction, float power, float duration) {
-            if (!_isKnockback) {
-                _knockbackDirection = direction;
-                _knockbackPower = power;
-                _knockbackDuration = duration;
-                _knockbackTimer = _knockbackDuration;
-                _isKnockback = true;
-            }
-        }
-
         private Vector3 FindFloor() {
             int floorAverage = 1;
 

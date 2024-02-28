@@ -18,15 +18,14 @@ MonoBehaviour:
   _strength: 0
   _hitVFX: {fileID: 4883546787656641152, guid: 767466e2b1c3f00479b4605fa32c242d, type: 3}
   _hitShape:
-    rid: 1422876358736347304
+    rid: 1422876378609221746
   references:
     version: 2
     RefIds:
-    - rid: 1422876358736347304
-      type: {class: BoxHitboxShape, ns: Roguelike.Damages.Hitbox, asm: Assembly-CSharp}
+    - rid: 1422876378609221746
+      type: {class: CapsuleHitboxShape, ns: Roguelike.Damages.Hitbox, asm: Assembly-CSharp}
       data:
-        _width: 0.4
-        _height: 2
+        _radius: 2
         _layerMask:
           serializedVersion: 2
           m_Bits: 512

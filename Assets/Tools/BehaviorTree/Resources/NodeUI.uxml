@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/Tools/BehaviorTree/Resources/NodeStyleSheets.uss?fileID=7433441132597879392&amp;guid=9d9e34dc0396ab94ab90fc5f26f12277&amp;type=3#NodeStyleSheets" />
+    <ui:VisualElement name="Background" style="height: auto; width: auto; position: absolute; left: 0; top: 0; right: 0; bottom: 0; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;" />
+    <ui:VisualElement name="selection-border" picking-mode="Ignore" />
+    <ui:VisualElement name="node-border">
+        <ui:VisualElement name="contents">
+            <ui:VisualElement name="top">
+                <ui:VisualElement name="input" style="width: auto; position: relative;" />
+                <ui:VisualElement name="divider" class="vertical" />
+                <ui:VisualElement name="title" style="font-size: 14px; flex-direction: row; align-items: center;">
+                    <ui:VisualElement name="image-container" style="flex-direction: row;">
+                        <ui:VisualElement name="nodeImage" style="width: 32px; height: 32px;" />
+                        <ui:Label name="title-label" text="SequencerNode" class="unity-text-element unity-label" style="color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-align: middle-center; margin-left: 5px;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="title-button-container" style="margin-left: auto;">
+                        <ui:VisualElement name="collapse-button">
+                            <ui:VisualElement name="icon" />
+                        </ui:VisualElement>
+                        <ui:Toggle name="breakpoint" style="margin-left: 5px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label display-tooltip-when-elided="true" name="description" text="Description text" style="font-size: 12px; color: rgb(200, 200, 200); margin-top: 5px; white-space: normal;" />
+            <ui:VisualElement name="divider" class="horizontal" />
+            <ui:VisualElement name="output" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using Roguelike.Elements;
-using Roguelike.Weapons.Combo;
 using System.Threading;
 using UnityEngine;
 
@@ -22,6 +21,7 @@ namespace Roguelike.Weapons
         private GameObject _holdingWeapon;
 
         public WeaponCombo Combo { get { return _combo; } }
+        public Transform WeaponCenter { get { return _weaponCenter; } }
 
         /// <summary>
         /// scriptableobjectのcloneを作成
@@ -40,6 +40,11 @@ namespace Roguelike.Weapons
             _holdingWeapon = weapon;
             return weapon;
         }
+        /// <summary>
+        /// 当たり判定の生成
+        /// </summary>
+        /// <param name="owner">生成の中心</param>
+        /// <param name="comboCount">現在のコンボ</param>
         public void CreateHitbox(GameObject owner, int comboCount) {
             if (_weaponOwner == null) {
                 _weaponOwner = owner;
@@ -56,10 +61,7 @@ namespace Roguelike.Weapons
         public void CancelAttack() {
             _source?.Cancel();  
         }
-        public bool IsMovableAnimation(int comboCount) => _combo.GetMoveAnimationToggle(comboCount);
-        public MoveSettings GetMove(int comboCount) => _combo.GetMoveSettings(comboCount);
-        public AnimationClip GetAttackAnimation(int comboCount) => _combo.GetComboAnimation(comboCount);
-        public (float delay, float dura) GetAttackTime(int comboCount) => _combo.GetHitboxLifetime(comboCount);
+        public ComboParameter GetCombo(int comboCount) { return _combo.GetData(comboCount); }
         protected abstract void OnAttack(int comboCount);
     }
 }

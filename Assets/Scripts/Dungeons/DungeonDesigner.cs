@@ -11,10 +11,12 @@ namespace Roguelike.Dungeons
         [SerializeField] int _ySize = 6;
         [SerializeField] DungeonRoomData _roomData;
         [SerializeField] int _roomSize = 30;
-        [SerializeReference] RoomData[,] _grid;
+        [SerializeField] GameObject _startRoomSymbol;
 
         [SerializeField] NavMeshSurface _dungeonSurface;
-        [SerializeField] Mesh _navMeshArea;
+        [SerializeField] Material _minimapDefaultMaterial;
+
+        private RoomData[,] _grid;
 
         private void Awake() {
             OnStart();
@@ -28,6 +30,7 @@ namespace Roguelike.Dungeons
                 }
             }
             Vector2Int startRoomPosition = SetStartRoom();
+            Instantiate(_startRoomSymbol, new Vector3(startRoomPosition.x, 0, startRoomPosition.y) * 30, Quaternion.identity); ;
 
             GenerateGrid();
             DungeonConnector connector = new DungeonConnector(_grid, _roomSize);
@@ -47,8 +50,9 @@ namespace Roguelike.Dungeons
             mesh.triangles = triangles.indices;
 
             MeshFilter filter = _dungeonSurface.gameObject.GetComponent<MeshFilter>();
+            Renderer renderer = _dungeonSurface.gameObject.GetComponent<Renderer>();
             filter.mesh = mesh;
-            _navMeshArea = mesh;
+            renderer.material = _minimapDefaultMaterial;
         }
         /// <summary>
         /// 周囲4辺のランダムな位置に開始地点を作成

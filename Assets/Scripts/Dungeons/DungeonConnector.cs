@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 namespace Roguelike.Dungeons
 {
@@ -70,9 +69,12 @@ namespace Roguelike.Dungeons
                 int x, y;
                 GetDirection(startX, startY, direction, out x, out y);
                 if (x < 0 || x >= _xSize || y < 0 || y >= _ySize) continue;
+
                 var room = _grid[x, y];
                 var parent = _grid[startX, startY];
+
                 if (room.SimulatedCount != 0 || room.IsSingleGate) continue;
+
                 isConnected = true;
                 _grid[startX, startY].SimulatedCount = _roomCollections + 1;
                 GetObjectsOnLine(new Vector3(startX * _roomSize, 3, startY * _roomSize), new Vector3(x * _roomSize, 3, y * _roomSize));
@@ -99,7 +101,7 @@ namespace Roguelike.Dungeons
             RaycastHit[] hits = Physics.RaycastAll(start, end - start, Vector3.Distance(start, end));
             GameObject[] objects = hits.Select(hit => hit.collider.gameObject).ToArray();
             foreach (var obj in objects) {
-                Object.Destroy(obj.gameObject);
+                Object.Destroy(obj);
             }
         }
     }

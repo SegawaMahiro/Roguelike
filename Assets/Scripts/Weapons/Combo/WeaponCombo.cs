@@ -1,16 +1,22 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Roguelike.Weapons.Combo
+namespace Roguelike.Weapons
 {
 
     [Serializable]
     public struct MoveSettings
     {
-        [Range(0, 1)] public float MoveTiming;
-        public MoveDirection Direction;
-        public float Duration;
-        public float Power;
+        [SerializeField,MinMaxSlider(0, 1)] Vector2 _moveTiming;
+        [SerializeField] MoveDirection _direction;
+        [SerializeField] float _power;
+
+        public MoveDirection Direction => _direction;
+        public float Power => _power;
+
+        public float StartTime => _moveTiming.x;
+        public float EndTime => _moveTiming.y;
+        public float Duration => _moveTiming.y - _moveTiming.x;
 
         public enum MoveDirection
         {
@@ -27,30 +33,26 @@ namespace Roguelike.Weapons.Combo
         [SerializeField, MinMaxSlider(0, 1)] Vector2 _activationTime;
         [SerializeField] bool _useAnimationMove;
         [SerializeField] MoveSettings _moveSetting;
-        public bool UseAnimationMove => _useAnimationMove;
+        public bool IsMovableAnimation => _useAnimationMove;
         public AnimationClip AnimationClip => _animationClip;
         public Vector2 ActivationTime => _activationTime;
         public MoveSettings MoveSetting => _moveSetting;
+
+        public float ClipLength => _animationClip.length;
+        public float StartTime => _activationTime.x * _animationClip.length; 
+        public float EndTime => _activationTime.y * _animationClip.length;
+        public float Duration => EndTime - StartTime;
+
+        public float NormalizedStartTime => _activationTime.x; 
+        public float NormalizedEndTime => _activationTime.y;
+        public float NormalizedDuration => _activationTime.y - _activationTime.x;
     }
 
     [CreateAssetMenu(fileName = "ScriptableObjects/Combo/Create ComboParameter", menuName = "New ComboParameter")]
     public class WeaponCombo : ScriptableObject
     {
-
         [SerializeField] ComboParameter[] _comboParameters;
         public int Count { get { return _comboParameters.Length; } }
-        public MoveSettings GetMoveSettings(int index) => _comboParameters[index].MoveSetting;
-        public AnimationClip GetComboAnimation(int index) => _comboParameters[index].AnimationClip;
-        public bool GetMoveAnimationToggle(int index) => _comboParameters[index].UseAnimationMove;
-
-        public (float delay, float duration) GetHitboxLifetime(int count) {
-            var comboParam = _comboParameters[count];
-
-
-            float animationLength = comboParam.AnimationClip.length;
-            float delay = animationLength * comboParam.ActivationTime.x;
-            float duration = animationLength * comboParam.ActivationTime.y - delay;
-            return (delay, duration);
-        }
+        public ComboParameter GetData(int index) => _comboParameters[index];
     }
 }

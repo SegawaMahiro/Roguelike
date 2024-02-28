@@ -12,9 +12,9 @@ namespace Roguelike.Weapons.Sword
 
         protected override void OnAttack(int comboCount) {
 
-            var t = GetAttackTime(comboCount);
+            var t = GetCombo(comboCount);
 
-            HitboxUtility.CreateContinuousOverlap(_weaponCenter, _hitShape, t.delay, t.dura, hit => {
+            HitboxUtility.CreateContinuousOverlap(_weaponCenter, _hitShape, t.StartTime, t.Duration, hit => {
 
                 if (hit.Collider.gameObject == _weaponOwner) return;
 
@@ -27,6 +27,8 @@ namespace Roguelike.Weapons.Sword
                     var rotation = Quaternion.LookRotation(hitDirection);
                     var vfx = ObjectPoolManager.Instance.Get(_hitVFX, enter, rotation);
                     ObjectPoolManager.Instance.Release(vfx, 1);
+                    SoundManager.Instance.PlaySE($"SwordHit{comboCount+1}");
+
 
                     target.ApplyDamage(new Damage() { Value = _strength });
 

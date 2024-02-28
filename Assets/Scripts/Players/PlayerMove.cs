@@ -5,8 +5,8 @@ namespace Roguelike.Players
 {
     public class PlayerMove : BasePlayerComponent
     {
-        [SerializeField] Transform _target;
         [SerializeField] SerializableReactiveProperty<bool> _isLockOn;
+        [SerializeField] AnimationClip _clip;
 
         private PlayerCharacterController _cc;
         private PlayerAnimation _playerAnimation;
@@ -15,17 +15,18 @@ namespace Roguelike.Players
 
         private ReactiveProperty<float> _walkSpeed = new();
         private ReactiveProperty<bool> _isSprint = new();
-        private ReactiveProperty<Vector3> _inputDirection = new();
+        private ReactiveProperty<Vector2> _inputDirection = new();
         private ReactiveProperty<bool> _isDodge = new();
+        private ReactiveProperty<Transform> _target = new();
 
         internal PlayerCharacterController CC { get { return _cc; } }
-        public Transform Target { get { return _target; } }
 
         internal ReadOnlyReactiveProperty<float> WalkSpeed { get { return _walkSpeed; } }
         internal ReadOnlyReactiveProperty<bool> IsSprint { get { return _isSprint; } }
-        internal ReadOnlyReactiveProperty<Vector3> InputDirection { get { return _inputDirection; } }
+        internal ReadOnlyReactiveProperty<Vector2> InputDirection { get { return _inputDirection; } }
         internal ReadOnlyReactiveProperty<bool> IsLockOn { get { return _isLockOn; } }
         internal ReadOnlyReactiveProperty<bool> IsDodge { get { return _isDodge; } }
+        internal ReadOnlyReactiveProperty<Transform> Target {  get { return _target; } }
 
         protected override void OnAwake() {
             // このtransformに対して実行させるcharacterの移動
@@ -46,12 +47,17 @@ namespace Roguelike.Players
 
             // 移動が行われている場合進行方向を取得
             InputProvider.MoveDirection
-                .Subscribe(x => OnMove(x)).AddTo(this);
+                .Subscribe(x => {
+                    OnMove(x);
+                    var inverseDir = transform.InverseTransformDirection(x);
+                    _inputDirection.Value = new Vector2(inverseDir.x, inverseDir.z);
+                    }
+                ).AddTo(this);
 
 
             // sprintが有効の場合valueに適応
             InputProvider.Sprint
-                .Where(_ => Core.Parameter.IsSprintable)
+                .Where(_ => Core.Parameter.IsSprintable && !_isLockOn.Value)
                 .Subscribe(x => _isSprint.Value = x).AddTo(this);
 
             // ロックオン状態を取得
@@ -77,19 +83,28 @@ namespace Roguelike.Players
             _inputDirection.Value = direction;
         }
         private void OnLockOn(bool toggle) {
+            if (toggle) {
+                _isSprint.Value = false;
+            }
             _isLockOn.Value = toggle;
             _cc.ToggleLockOn(_isLockOn.Value);
-            _cc.SetLockonTarget(_target);
+            _cc.SetLockonTarget(_target.Value);
             // targetが特定の範囲内にいた場合
+            SetTarget();
         }
         private void OnDodge(bool toggle) {
             _isDodge.Value = toggle;
             // ロックオン中の場合は回避
             if (_isLockOn.Value) {
-                _playerAnimation.PlayAnimation("Dodge", 1);
-                _cc.ApplyKnockback(Quaternion.LookRotation(transform.forward) * InputDirection.CurrentValue, 5, 0.3f);
+                Core.DisableMovable(1f);
+                _playerAnimation.PlayAnimation(_clip);
+                var dir = new Vector3(_inputDirection.Value.x, 0, _inputDirection.Value.y);
+                _cc.ApplyKnockback(-transform.forward, 5,1f,0.4f);
+                return;
             }
-            // それ以外の場合ジャンプ
+        }
+        private void SetTarget() {
+            _target.Value = GameObject.Find("Dummy")?.transform;
         }
     }
 }

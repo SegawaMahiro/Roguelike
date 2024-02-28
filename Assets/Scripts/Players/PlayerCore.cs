@@ -1,6 +1,5 @@
-﻿using Assets.Inputs;
+﻿using R3;
 using Roguelike.Damages;
-using R3;
 using UnityEngine;
 
 namespace Roguelike.Players
